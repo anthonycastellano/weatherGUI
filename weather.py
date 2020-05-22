@@ -3,6 +3,7 @@ from tkinter import *
 import tkinter as tk
 from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup as soup
+from PIL import Image, ImageTk
 
 #hourly weather stats
 def generate_stats():
@@ -38,8 +39,14 @@ def generate_stats():
 	page_html = urlopen(req).read()
 	page_soup = soup(page_html, "html.parser")
 
-	temp = page_soup.find("div",{"class":"today_nowcard-temp"}).text
-	phrase = page_soup.find("div",{"class":"today_nowcard-phrase"}).text
+	try:
+		temp = page_soup.find("div",{"class":"today_nowcard-temp"}).text
+		phrase = page_soup.find("div",{"class":"today_nowcard-phrase"}).text
+	except:
+		print("ERROR: couldn't fetch current data")
+		temp = "loading..."
+		phrase = "loading..."
+		pass
 	current_stats = [temp, phrase]
 
 	return hourly_stats, current_stats
@@ -49,6 +56,8 @@ def generate_stats():
 hourly_stats, current_stats = generate_stats()
 fullScreenState = True
 REFRESH_TIME = 300000
+HEIGHT = 600
+WIDTH = 1024
 
 def quitFullScreen(event):
 	fullScreenState = False
@@ -71,7 +80,7 @@ root = tk.Tk()
 root.attributes('-fullscreen', True)
 root.bind("<Escape>", quitFullScreen)
 
-C = Canvas(root, height=250, width=300)
+C = Canvas(root, height=HEIGHT, width=WIDTH)
 filename = PhotoImage(file = "bg.png")
 bg_label = Label(root, image=filename)
 bg_label.place(x=0, y=0, relwidth = 1, relheight = 1)
@@ -79,21 +88,21 @@ C.pack()
 
 temp_text = StringVar()
 temp_text.set("Current Temp: " + current_stats[0])
-current_temp = Label(root, textvariable=temp_text, bd=0, fg='white', bg='#4DAFC1', font=('Arial', '60','normal'))
+current_temp = Label(root, textvariable=temp_text, bd=0, fg='white', bg='#B2B2B2', font=('Arial', '60','normal'))
 current_temp.place(x=100,y=100)
 current_temp.after(REFRESH_TIME, current_refresh)
 
 phrase_text = StringVar()
 phrase_text.set(current_stats[1])
-current_phrase = Label(root, textvariable=phrase_text, bd=0, fg='white', bg='#4DAFC1', font=('Arial', '40', 'normal'))
-current_phrase.place(x=100,y=200)
+current_phrase = Label(root, textvariable=phrase_text, bd=0, fg='white', bg='#B2B2B2', font=('Arial', '40', 'normal'))
+current_phrase.place(x=100,y=190)
 
-xPos = 80
-yPos = 450
+xPos = 85
+yPos = 340
 date_string_vars = []
 temp_string_vars = []
 precip_string_vars = []
-for i in range(16):
+for i in range(10):
 	date_string_vars.append(StringVar())
 	date_string_vars[i].set(hourly_stats[i][0] + " " + hourly_stats[i][1])
 
@@ -103,18 +112,18 @@ for i in range(16):
 	precip_string_vars.append(StringVar())
 	precip_string_vars[i].set("Precip: " + hourly_stats[i][3])
 
-	date = Label(root, textvariable=date_string_vars[i], fg='white', bg='#4DAFC1', font=('Arial', '16', 'bold'))
+	date = Label(root, textvariable=date_string_vars[i], fg='white', bg='#B2B2B2', font=('Arial', '16', 'bold'))
 	date.place(x=xPos, y=yPos)
 
-	temp = Label(root, textvariable=temp_string_vars[i], fg='white', bg='#4DAFC1', font=('Arial', '12', 'normal'))
-	temp.place(x=xPos, y=yPos+30)
+	temp = Label(root, textvariable=temp_string_vars[i], fg='white', bg='#B2B2B2', font=('Arial', '12', 'normal'))
+	temp.place(x=xPos+20, y=yPos+30)
 
-	precip = Label(root, textvariable=precip_string_vars[i], fg='white', bg='#4DAFC1', font=('Arial', '12', 'normal'))
-	precip.place(x=xPos, y=yPos+52)
+	precip = Label(root, textvariable=precip_string_vars[i], fg='white', bg='#B2B2B2', font=('Arial', '12', 'normal'))
+	precip.place(x=xPos+13, y=yPos+52)
 
 	xPos += 180
-	if i == 7:
-		yPos += 200
-		xPos = 80
+	if i == 4:
+		yPos += 110
+		xPos = 85
 
 root.mainloop()
