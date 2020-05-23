@@ -66,6 +66,18 @@ def quitFullScreen(event):
 
 def current_refresh():
 	hourly_stats, current_stats = generate_stats()
+
+	#update image
+	if current_stats[1].upper() == "FAIR":
+		bg_label.configure(image=fair_image)
+	elif current_stats[1].upper() == "CLOUDY":
+		bg_label.configure(image=cloud_image)
+	elif current_stats[1].upper() == "RAIN":
+		bg_label.configure(image=rain_image)
+	else:
+		bg_label.configure(image=bg_image)
+
+	#update text
 	temp_text.set("Current Temp: " + current_stats[0])
 	phrase_text.set(current_stats[1])
 
@@ -81,8 +93,20 @@ root.attributes('-fullscreen', True)
 root.bind("<Escape>", quitFullScreen)
 
 C = Canvas(root, height=HEIGHT, width=WIDTH)
-filename = PhotoImage(file = "bg.png")
-bg_label = Label(root, image=filename)
+bg_image = PhotoImage(file = "bg.png")
+fair_image = PhotoImage(file = "sunny.png")
+cloud_image = PhotoImage(file = "cloudy.png")
+rain_image = PhotoImage(file = "rainy.png")
+
+if current_stats[1].upper() == "FAIR":
+	bg_label = Label(root, image=fair_image)
+elif current_stats[1].upper() == "CLOUDY":
+	bg_label = Label(root, image=cloud_image)
+elif current_stats[1].upper() == "RAIN":
+	bg_label = Label(root, image=rain_image)
+else:
+	bg_label = Label(root, image=bg_image)
+
 bg_label.place(x=0, y=0, relwidth = 1, relheight = 1)
 C.pack()
 
@@ -119,7 +143,7 @@ for i in range(10):
 	temp.place(x=xPos+20, y=yPos+30)
 
 	precip = Label(root, textvariable=precip_string_vars[i], fg='white', bg='#B2B2B2', font=('Arial', '12', 'normal'))
-	precip.place(x=xPos+13, y=yPos+52)
+	precip.place(x=xPos+15, y=yPos+52)
 
 	xPos += 180
 	if i == 4:
