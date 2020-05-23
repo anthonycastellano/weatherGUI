@@ -69,7 +69,7 @@ def current_refresh():
 	temp_text.set("Current Temp: " + current_stats[0])
 	phrase_text.set(current_stats[1])
 
-	for i in range(16):
+	for i in range(10):
 		date_string_vars[i].set(hourly_stats[i][0] + " " + hourly_stats[i][1])
 		temp_string_vars[i].set("Temp: " + hourly_stats[i][2])
 		precip_string_vars[i].set("Precip: " + hourly_stats[i][3])
